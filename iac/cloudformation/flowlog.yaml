@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  BucketName:
+    Type: String
+    Description: Bucket Name
+    Default: flowlogsbucket
+  MyVPC:
+    Type: String
+    Description: VPC id
+    Default: vpc-dd958db5 
+  Region:
+    Type: String
+    Default: ap-south-1 
+  AccountId:
+    Type: String
+    Default: 876658555074 
+
+  MyRoleName:
+    Type: String
+    Default: vpcflow-s3
+
+  MyPolicyName:
+    Type: String
+    Default: Flowlogs-s3
+    
+Resources:
+  MyFlowlog:
+    Type: 'AWS::EC2::FlowLog'
+    DependsOn:
+      - MyBucket
+    Properties: {
+        LogDestination: !GetAtt MyBucket.Arn,
+        LogDestinationType: s3,
+        ResourceType: VPC,
+        ResourceId: !Ref MyVPC,
+        TrafficType: ALL}
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 91481056-6bb7-4bea-9edc-be297583e36f
+    DependsOn:
+      - MyBucket
+  MyBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: Private
+      BucketName: !Ref BucketName
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 3c12e597-4545-4db9-ae79-3994ddaaabb3   
+
+  MyRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref MyRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - vpc-flow-logs.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: !Ref MyPolicyName
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Sid: AWSLogDeliveryWrite
+              Effect: Allow
+              Action: s3:PutObject
+              Resource: 'arn:aws:s3:::$BucketName/AWSLogs/$AccountId/*'
+            - Sid: AWSLogDeliveryCheck
+              Effect: Allow
+              Action:
+              - s3:GetBucketAcl
+              - s3:ListBucket
+              Resource: 'arn:aws:s3:::$BucketName' 
+ 
