@@ -16,7 +16,7 @@ jobs:
         run: |
           import time
           print("hello")
-          shell: python
+        shell: python
 
   run-windows-command:
     runs-on: windows-latest
