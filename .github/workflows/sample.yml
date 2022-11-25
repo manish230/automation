@@ -12,7 +12,6 @@ jobs:
         run: |
           node -v
           npm -v
-        shell: python
 
   run-windows-command:
     runs-on: windows-latest
