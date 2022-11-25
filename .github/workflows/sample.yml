@@ -18,8 +18,7 @@ jobs:
     runs-on: windows-latest
     needs: ["run-shell-command"]
     steps: 
-    - name: Directory
-    Powershell
+    - name: Directory Powershell
       run: get-Location
     - name: Directory Bash
       run: pwd
