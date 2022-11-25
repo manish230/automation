@@ -12,6 +12,16 @@ jobs:
         run: |
           node -v
           npm -v
+        shell: python
 
-
+  run-windows-command:
+    runs-on: windows-latest
+    needs: ["run-shell-command"]
+    steps: 
+    - name: Directory
+    Powershell
+      run: get-Location
+    - name: Directory Bash
+      run: pwd
+      shell: bash
 
