@@ -14,8 +14,8 @@ jobs:
           npm -v
       - name: python command 
         run: |
-          import platform
-          print(platform.processor())
+          import time
+          print("hello")
           shell: python
 
   run-windows-command:
